@@ -15,8 +15,6 @@ X = [
 ]
 '''
 
-X, y = spiral.create_data(100, 3)
-
 
 class Layer:
     def __init__(self, n_inputs, n_neurons):
@@ -33,10 +31,26 @@ class ActivationReLU:
         self.output = np.maximum(0, inputs)
 
 
+class ActivationSoftMax:
+    def forward(self, inputs):
+        exp_inputs = np.exp(inputs - np.max(inputs, axis=1, keepdims=True))
+        self.output = exp_inputs / np.sum(exp_inputs, axis=1, keepdims=True)
+
+
+
+X, y = spiral.create_data(100, 3)
+
+# Because of the given dataset, there are only 2 inputs i.e. x and y
 layer1 = Layer(2, 5)
 activation1 = ActivationReLU()
+
+layer2 = Layer(5, 5)
+activation2 = ActivationSoftMax()
 
 layer1.forward(X)
 activation1.forward(layer1.output)
 
-print(activation1.output)
+layer2.forward(activation1.output)
+activation2.forward(layer2.output)
+
+print(activation2.output[:10])
