@@ -1,12 +1,21 @@
 import numpy as np
+from nnfs.datasets import spiral
+
+# Numpy isn't consistent with datatypes. This Solves that
+# nnfs.init()
+
 
 np.random.seed(0)
 
+'''
 X = [
     [1, 2, 3, 2.5],
     [2.0, 5.0, -1.0, 2.0],
     [-1.5, 2.7, 3.3, -0.8]
 ]
+'''
+
+X, y = spiral.create_data(100, 3)
 
 
 class Layer:
@@ -19,12 +28,15 @@ class Layer:
         self.output = np.dot(inputs, self.weights.T) + self.biases
 
 
-layer1 = Layer(4, 5)
-layer2 = Layer(5, 3)
-layer3 = Layer(3, 2)
+class ActivationReLU:
+    def forward(self, inputs):
+        self.output = np.maximum(0, inputs)
+
+
+layer1 = Layer(2, 5)
+activation1 = ActivationReLU()
 
 layer1.forward(X)
-layer2.forward(layer1.output)
-layer3.forward(layer2.output)
+activation1.forward(layer1.output)
 
-print(layer3.output)
+print(activation1.output)
